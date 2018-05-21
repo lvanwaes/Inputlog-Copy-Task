@@ -1,0 +1,1130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+
+<head>
+<title>Inputlog - Copy task</title>
+<script src="scripts/library/jquery-2.1.0.js"></script>
+<script src="scripts/library/jquery.knob.min.js"></script>
+<script src="scripts/CopyTask.js"></script>
+<script src="scripts/library/date.format.js"></script>
+<script src="scripts/library/FileSaver.js"></script>
+<script src="scripts/library/Blob.js"></script>
+<link href="styles/Site_CopyTask.css" rel="stylesheet" type="text/css"/>
+<link href="styles/styles.css" rel="stylesheet" type="text/css"/>
+<link href="styles/genericons.css" rel="stylesheet" type="text/css"/>
+<link href="../Content/favicon.ico" rel="shortcut icon"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Inputlog"/>
+
+<script type="text/javascript">
+    var alertClosing = "Are you sure you want to cancel this copy task?";
+
+    function confirmExit() {
+        return alertClosing;
+    }
+</script>
+<script type="text/javascript">
+    var filepaths = [], xmls = [], copytaskNames = [];
+    var dir = "";
+    var fileExtension = ".txt";
+    var progress = 0;
+    var xml; // the selected copy task will be stored here.
+    var copytask_contents = [];
+    var active_copytask_content;
+    var copytaskName;
+    var tasks = [];
+    var oldinstr;
+    var timer;
+    var interval;
+    var millicounter = 0;
+    var resources;
+    var resources_fallback;
+    // Boolean toggled to for ffa_repetition's (free for all repetition)
+    // Such a task is a task that has no minimum amount of repetitions but may have as many
+    // repetitions as the user can make within the allotted time.
+    var ffa_repetition = false;
+
+    // Change task-dir depending on window.location.host. Localhost uses test_tasks dir
+    // the inputlog server uses tasks dir
+    if (document.location.hostname === "localhost") {
+        dir = "test_tasks/";
+    } else {
+        dir = "tasks/";
+    }
+
+    function insertInCorrectPosition(currentTaskName, currentTaskLanguage, currentTaskNr) {
+        // Find right insertion position
+        var i = 0;
+        while (i < copytaskNames.length && currentTaskName > copytaskNames[i]) {
+            i++;
+        }
+        copytaskNames.splice(i, 0, currentTaskName);
+
+        if (i === 0) {
+            // first task, prepend as first child and continue.
+            $('#tasks-table')
+                .prepend(
+                    "<tr><td>" +
+                    currentTaskName +
+                    "<td>" +
+                    currentTaskLanguage +
+                    "<td>" +
+                    "<button onclick='chooseTest(" +
+                    currentTaskNr +
+                    ")'>Start</button></tr>");
+        } else {
+            var selector = '#tasks-table tr:nth-child(' + i + ')';
+            $(selector)
+                .after(
+                    "<tr><td>" +
+                    currentTaskName +
+                    "<td>" +
+                    currentTaskLanguage +
+                    "<td>" +
+                    "<button onclick='chooseTest(" +
+                    currentTaskNr +
+                    ")'>Start</button></tr>");
+        }
+    }
+
+    $.ajax({
+        url: dir,
+        success: function(data) {
+
+            $("#task-div").after("<table id='tasks-table' class='tasks'></table>");
+            var counter = 0;
+            $(data)
+                .find("a:contains(" + fileExtension + ")")
+                .each(function() {
+                    filename = this.href.replace(window.location.host, "").replace("http://", "");
+                    //$.get(filename, function (response) {
+                    $.ajax({
+                        type: "GET",
+                        url: filename,
+                        cache: false,
+                        success: function(response) {
+                            file = response;
+                            try {
+                                copytask_contents[counter] = file;
+                                xml = $.parseXML(file);
+                                xmls.push(xml);
+                                name = $("title", xml).text();
+                                language = $("language", xml).text();
+                                filepaths[counter] = filename;
+
+                                insertInCorrectPosition(name, language, counter);
+                                counter++;
+                            } catch (err) {
+                                alert(err);
+                            };
+                        },
+                        error: function(response) {
+                            tasksFound--;
+                        }
+                    });
+                });
+        }
+    });
+
+    function setLineNumbers() {
+        var area = $("#inputarea");
+        var rows = area.attr("rows");
+        var house = document.getElementsByClassName('line-nums')[0],
+            html = '',
+            i;
+        if (rows > 1) {
+            for (i = 0; i < rows; i++) {
+                html += '<div>' + (i + 1) + '</div>';
+            }
+            house.innerHTML = html;
+        } else {
+            house.innerHTML = '';
+        }
+    }
+
+    function resetLineNumbers() {
+        document.getElementsByClassName('line-nums')[0].innerHTML = '';
+    }
+
+    function loadResourceFiles(languageCode) {
+        // Load fallback info first, then normal resources
+        $.ajax({
+                type: "GET",
+                url: 'resources/EN.txt',
+                cache: false,
+                success: function(result) {
+                    try {
+                        resources_fallback = $.parseXML(result);
+                    } catch (err) {
+                        console.log("Could not load fallback resource file.");
+                    }
+                },
+                error: function() {
+                    console.log("Could not load fallback resource file.");
+                }
+            })
+            .always(function() {
+                if (languageCode === 'EN') {
+                    resources = resources_fallback;
+                    enterSessionStrings();
+                    return;
+                }
+
+                var rfilename = 'resources/' + languageCode + ".txt";
+                $.ajax({
+                    type: "GET",
+                    url: rfilename,
+                    cache: false,
+                    success: function(result) {
+                        try {
+                            resources = $.parseXML(result);
+                            enterSessionStrings();
+                        } catch (err) {
+                            console.log("Could not load resource file for language: " + languageCode);
+                        }
+                    },
+                    error: function() {
+                        console.log("Could not load resource file for language: " + languageCode);
+                    }
+                });
+            });
+    }
+
+    function getResource(rname) {
+        var value = $(rname, resources).text();
+        if (value === '') {
+            return $(rname, resources_fallback).text();
+        }
+        return value;
+    }
+
+    function getResources(rname) {
+        var nodes = $(rname, resources);
+        if (nodes.length === 0) {
+            nodes = $(rname, resources_fallback);
+        }
+        var strings = [];
+        nodes.each(function() {
+            var value = $(this).text();
+            strings.push(value);
+        });
+        return strings;
+    }
+
+    function getFromTaskXml(rname, xml) {
+        var nodes = $(rname, xml);
+        var strings = [];
+        nodes.each(function() {
+            layout = $(this).text();
+            strings.push(layout);
+        });
+        return strings;
+    }
+
+    function enterSessionStrings() {
+
+        $("#title").html(getResource("participant_information")).show();
+        $("#instr").html(getResource("intro") + "<br/>");
+        $("#name_label").text(getResource("name_label") + "*");
+        $("#age_label").text(getResource("age_label") + "*");
+        $("#gender_label").text(getResource("gender"));
+        $("#session_label").text(getResource("session"));
+        $("#female_label").text(getResource("female"));
+
+        $("#gender").append("<option value='' selected disabled hidden/>");
+        $("#gender").append("<option>" + getResource("female") + "</option>");
+        $("#gender").append("<option>" + getResource("male") + "</option>");
+        $("#gender").append("<option>" + getResource("undefined") + "</option>");
+
+        // Set keyboard layout options.
+        $("#layouts_label").text(getResource("kblayout"));
+        var layouts = getFromTaskXml("layout", xml);
+        $("#layouts").append("<option></option>");
+        for (var i = 0; i < layouts.length; i++) {
+            $("#layouts").append("<option>" + layouts[i] + "</option>");
+        };
+
+        // Set agreement text
+        $("#agreementCheck").after(getResource("agreement"));
+
+        $("#continue-button").text(getResource("continue"));
+        alertClosing = getResource("alert_closing");
+    }
+
+    function chooseTest(counter) {
+        xml = xmls[counter];
+        //copytaskName = copytaskNames[counter];
+        active_copytask_content = copytask_contents[counter];
+        var name = $(xml).find('title').text();
+        copytaskName = name;
+
+        // Get session information.
+        getSessionInfo();
+    }
+
+    function handleFileSelect(evt) {
+        var file = evt.target.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.readAsText(file, "UTF-8");
+            reader.onload = function(evt) {
+                var contents = evt.target.result;
+                active_copytask_content = contents;
+                xml = $.parseXML(contents);
+                if (xml != null) {
+                    getSessionInfo();
+                }
+            }
+            reader.onerror = function(evt) {
+                alert("error reading file");
+            }
+        }
+    }
+
+    // Add a red border style to given JQueryElement
+    function addErrorBorder(jqElement, jqLabel) {
+        if (jqElement !== undefined) {
+            jqElement.css("border", "1px solid red");
+        }
+        if (jqLabel !== undefined) {
+            jqLabel.css("color", "red");
+        }
+    }
+
+    // Remove border style from given JQueryElement
+    function removeErrorBorder(jqElement, jqLabel) {
+        if (jqElement !== undefined) {
+            jqElement.css("border", "");
+        }
+        if (jqLabel !== undefined) {
+            jqLabel.css("color", "");
+        }
+    }
+
+    function validateSessionInfo() {
+        // Reset the "instr" div content.
+        $("#instr").html(getResource("intro") + "<br/>");
+        var errorFound = false;
+
+        // Empty name not allowed
+        if ($("#participant").val() === "") {
+            $("#instr").append(getResource("enter_name") + "<br/>");
+            addErrorBorder($("#participant"), $("#name_label"));
+            errorFound = true;
+        } else {
+            removeErrorBorder($("#participant"), $("#name_label"));
+        }
+
+        // Check age is a number.
+        if ($("#age").val() !== "") {
+            /*
+             * Age regex, two non-capturing groups (?:...)
+             * General: number might be preceded and/or followed by whitespace
+             * General: there is no other content except the number (and/or whitespace) - enforced by
+             * ^ (beginning) and $ (end) of sentence matchers.
+             * (Group 1) larger than or equal to 100, no larger than 199; OR
+             * (Group 2) between 1 and 99 (inclusive)
+            */
+            var ageIsValidRegex = /(?:^\s*1[0-9]{1,2}\s*$)|(?:^\s*[1-9][0-9]?\s*$)/i;
+            if (!ageIsValidRegex.test($("#age").val())) {
+                $("#instr").append(getResource("valid_age") + "<br/>");
+                addErrorBorder($("#age"), $("#age_label"));
+                errorFound = true;
+            } else {
+                removeErrorBorder($("#age"), $("#age_label"));
+            }
+        } else {
+            errorFound = true;
+            $("#instr").append(getResource("valid_age") + "<br/>");
+            addErrorBorder($("#age"), $("#age_label"));
+        }
+
+        // Keyboard layout must be specified.
+        var selected_layout = $("#layouts option:selected").text();
+        if (selected_layout === "") {
+            errorFound = true;
+            $("#instr").append(getResource("select_layout") + "<br/>");
+            addErrorBorder($("#layouts"), $("#layouts_label"));
+        } else {
+            removeErrorBorder($("#layouts"), $("#layouts_label"));
+        }
+
+        if (!$("#agreementCheck").prop("checked")) {
+            errorFound = true;
+            $("#instr").append(getResource("agreement_required") + "<br/>");
+            addErrorBorder(undefined, $("#agreement"));
+        } else {
+            removeErrorBorder(undefined, $("agreement"));
+        }
+
+        if (errorFound) {
+            return;
+        }
+
+        sessionObject.setParticipant($("#participant").val().trim());
+        sessionObject.setAge($("#age").val().trim());
+        sessionObject.setGender($("#gender").val());
+        sessionObject.setSession($("#session").val().trim());
+        sessionObject.setLayout(selected_layout);
+
+        $("#sessioninfo").css("display", "none");
+        startTask();
+
+    }
+
+    // Get the required session information before starting the copy task.
+    function getSessionInfo() {
+        sessionObject.setLanguage($("language", xml).text());
+        loadResourceFiles(sessionObject.getLanguage());
+
+        $("#sessioninfo").css("display", "block");
+        $("#tasks").detach();
+        $("#continue-button").click(validateSessionInfo);
+    }
+
+    function startTask() {
+        progress = 0;
+
+        var title = $("title", xml).text();
+        $("#title").html(title);
+        var gi = $('general_instructions', xml)
+        var instr = gi.text();
+
+        instr = instr.split(/\r*\n/g).join('<br>');
+        $("#instr").html(instr).text();
+
+        var tasknodes = $("task", xml);
+        $.each(tasknodes,
+            function(i, curItem) {
+                tasks.push(curItem);
+            });
+
+        $("#continue").html(getResource("start"));
+        $("#continue").removeAttr("hidden");
+        $("#continue").removeAttr("style");
+    }
+
+    $('document')
+        .ready(function() {
+            document.getElementById('file').addEventListener('change', handleFileSelect, false);
+        });
+
+    // Sets the advance button to enabled if the requirements have been met. Otherwise
+    // does nothing.
+    function setAdvanceAvailability() {
+        // If container is not visible, there is no input requirement, so advance is available
+        if ($("inputcontainer").attr("style") === "display:none") {
+            $("#continue").prop("disabled", false);
+        }
+        // Else, if the text area has enough lines, the requirements are met.
+        if ($("#inputarea").val().lineCount() >= $("#inputarea").attr("rows")) {
+            $("#continue").prop("disabled", false);
+        }
+    }
+
+    function advance() {
+        //reset all timer related variables
+        clearTimeout(timer);
+        clearInterval(interval);
+        millicounter = 0;
+        $('.dial').val(0).trigger('change');
+        isFirstKeyPress = true;
+
+        $("#inputarea").val("");
+        // Remove all queued animations, show text again (it might have been hidden by the last animation)
+        $("#instr").stop(true);
+        $("#instr").fadeIn(1);
+        $("#instr").removeClass("timeup");
+
+        if (progress === 0) {
+            $("#progressContainer").removeAttr("style", "display:none");
+            $("#progresstext").html(getResource("progress"));
+            $("#continue").html(getResource("continue"));
+            $("#quit")
+                .click(function() {
+                    location.reload();
+                });
+            $("#quit").text("Exit");
+            $("#quit").removeAttr("hidden");
+
+            window.onbeforeunload = confirmExit;
+
+            $("#task_title_small").html($("#title").html());
+            $("#title").html('');
+        }
+
+        if (progress < tasks.length) {
+            // Disable continue button for at least 0.75 seconds, then check if requirements for advancing
+            // have been met.
+            $("#continue").prop("disabled", true);
+            setTimeout(function() {
+                    setAdvanceAvailability();
+                },
+                750);
+
+            $("#inputcontainer").removeAttr("style", "display:none"); //makes inputarea visible
+
+            // Update progress bar
+            var progressValue = Math.round(((progress + 1) * 100) / (tasks.length));
+            $("#sliderbar").css("width", progressValue);
+
+
+            var task = tasks[progress];
+
+            // Set free_repetition toggle for task
+            free_repetition_node = $(task).attr("unlimited");
+            if (free_repetition_node) {
+                ffa_repetition = true;
+                $("#inputarea").attr("rows", 10);
+            } else {
+                ffa_repetition = false;
+            }
+
+            var task_title = $(task).attr("title");
+            $("#title2").removeAttr("hidden");
+            if (task_title) {
+                $("#title2").text(task_title);
+            } else {
+                $("#title2").text("");
+            }
+
+            var time = 0;
+            if (initialDowntime === 0) {
+                initialDowntime = window.performance.now();
+            } else {
+                time = window.performance.now() - initialDowntime;
+            }
+            var logevent = { downtime: time, uptime: time, title: task_title, type: 'focusEvent' };
+            events.push(logevent);
+
+            var newinstr = $("instructions", task).text();
+            $("#instr").html(newinstr.split(/\r*\n/g).join('<br />'));
+            var target = $("target", task).text();
+            $("#target").text(target);
+            $("#targetDiv").attr("style", "display:block");
+
+            var repeat = 1;
+            if ($(task).attr("repetition")) {
+                repeat = $(task).attr("repetition");
+                $("#inputarea").attr("rows", repeat);
+                setLineNumbers();
+            } else {
+                if (!ffa_repetition) {
+                    $("#inputarea").attr("rows", 1);
+                    setLineNumbers();
+                } else {
+                    resetLineNumbers();
+                }
+            }
+
+            if ($(task).attr("example")) {
+                $("#inputarea").prop("disabled", true);
+                var box = $("#inputarea");
+                for (i = 0; i < repeat; i++) {
+                    box.val(box.val() + target + "\n");
+                }
+            } else if ($(task).attr("informational")) {
+                $("#instr").html(newinstr.split(/\r*\n/g).join('<br />'));
+                $("#inputcontainer").attr("style", "display:none");
+                $("#targetDiv").attr("style", "display:none");
+                $("#continue").prop("disabled", false);
+            } else {
+                $("#inputarea").prop("disabled", false);
+                //$("#inputarea").focus();
+            }
+
+            var task_timelimit = $(task).attr("timelimit");
+            if (task_timelimit) {
+                $(".dial").knob();
+                $(".dial")
+                    .trigger('configure',
+                    {
+                        'min': 0,
+                        'max': task_timelimit * 10,
+                        'step': 1
+                    });
+                $("#timing").show();
+                $("#timingInfo").html(task_timelimit + " s");
+                $("#timingInfo").show();
+            } else {
+                $("#timing").hide();
+            }
+
+            progress++;
+            $("#inputarea").focus();
+        } else if (progress === tasks.length) {
+            $("#continue").attr("onClick", "validate_questionnaire()");
+            show_questionnaire();
+        }
+    }
+
+    function startTimer() {
+        var task = tasks[progress - 1];
+
+        //automatically advance to next question after time limit
+        if ($(task).attr("timelimit")) {
+            var timelimit = $(task).attr("timelimit");
+
+            interval = setInterval(function() {
+                    $('.dial').val(millicounter).trigger('change');
+                    millicounter++;
+                },
+                100);
+
+            timer = setTimeout(function() {
+                    $("#instr").html(getResource("time_up"));
+                    $("#instr").addClass("timeup");
+                    $("#inputarea").prop("disabled", true);
+                    $("#continue").prop("disabled", false);
+                    clearInterval(interval);
+                    $("#instr")
+                        .fadeOut(1000)
+                        .fadeIn(1000)
+                        .fadeOut(1000)
+                        .fadeIn(1000)
+                        .fadeOut(1000)
+                        .fadeIn(1000)
+                        .fadeOut(1000)
+                        .fadeIn(1000);
+                },
+                1000 * timelimit);
+
+            $("#timing").fadeOut(500).fadeIn(500);
+            $("#timingInfo").hide();
+        }
+    }
+
+    function clearText() {
+        $("#inputarea").attr("hidden", "hidden");
+        $("#instr").text("");
+        $("#targetDiv").attr("style", "display:none");
+        $("#target").text("");
+        $("#title2").text("");
+        $("#title2").attr("hidden", "hidden");
+        $("#inputcontainer").attr("style", "display:none");
+        $("#progressContainer").attr("style", "display:none");
+    }
+
+    function validate_questionnaire() {
+
+        // Clear old validation messages
+        $("#qMessages").text("");
+        var errorShown = false;
+        var appendError = function() {
+            if (!errorShown) {
+                errorShown = true;
+                $("#qMessages").append('<p class="question_error">' + getResource('error_required') + '</p>');
+            }
+        };
+
+        // All handedness options are required
+        var validated = true;
+        var radioRows = [0, 1, 2, 3];
+        radioRows.forEach(function (index) {         
+            var radioName = 'hand_radio_' + index.toString();
+            var radios = $('input:radio[name="' + radioName + '"]');
+            var isChecked = false;
+            radios.each(function() {
+                isChecked = isChecked || this.checked;
+                if (this.checked) {
+                    console.log('this is checked for radio: ' + radioName + ' - val: ' + $(this).val());
+                    qAnswers.add_handedness($(this).val());
+                }
+            });
+            if (isChecked) {
+                // at least one radio is checked for this radio-button-set
+                removeErrorBorder(undefined, $('#label_handedness' + index.toString()));
+            } else {
+                addErrorBorder(undefined, $('#label_handedness' + index.toString()));
+            }
+            validated = validated && isChecked;
+        });
+        if (!validated) {
+            appendError();
+        }
+
+        // Check & set dropdown values
+        var checkDropdown = function(optionId, successFunction) {
+            var optionValue = $("#" + optionId + " option:selected").text();
+            if (optionValue === '') {
+                validated = false;
+                appendError();
+                addErrorBorder($("#" + optionId), $("#label_" + optionId));
+            } else {
+                successFunction(optionValue);
+                removeErrorBorder($("#" + optionId), $("#label_" + optionId));
+            }
+        };
+
+        // Check computer is set.
+        checkDropdown('computer', function(c) { qAnswers.set_computer(c); });
+        checkDropdown('keyboard', function(c) { qAnswers.set_keyboard_familiarity(c); });
+        checkDropdown('browser', function(c) { qAnswers.set_browser(c); });
+        checkDropdown('disorder',
+            function(c) {
+                qAnswers.set_disorder($("#disorder option:selected").val() === "1");
+            });
+        checkDropdown('education', function(c) { qAnswers.set_education(c); });
+        checkDropdown('repetition',
+            function(c) {
+                qAnswers.set_repetition($("#repetition option:selected").val() !== "1");
+            });
+
+        // Check that at least one langugae is selected.
+        var languageOptions = getResources('option_language');
+        languageOptions.sort();
+        var languageIndices = [];
+        var currentIndex = 0;
+        while (currentIndex < languageOptions.length) {
+            languageIndices.push(currentIndex++);
+        }
+        var languagesSelected = languageIndices.map(function(val) {
+            return $('#languages-checkbox-' + val.toString()).is(':checked');
+        });
+
+        if (!languagesSelected.some(function(element) { return element; })) {
+            validated = false;
+            appendError();
+            addErrorBorder($('#id-languages-selection'), $('#label-languages'));
+        } else {
+            removeErrorBorder($('#id-languages-selection'), $('#label-languages'));
+
+            // Save the selected languages as a csv list.
+            var languagesArr = languagesSelected.map(function(isSelected, idx) {
+                return isSelected ? languageOptions[idx] : undefined;
+            }).filter(function(l) {
+                 return l !== undefined;
+            });
+            var languages = languagesArr.join(', ');
+            qAnswers.set_languages(languages);
+        }
+
+        if (validated) {
+            $("#questionnaire").css("display", "none");
+            finish();
+        }
+    }
+
+    function show_questionnaire() {
+
+        clearText();
+        $("#title").text(getResource("questions_title"));
+        $("#questionnaire").css("display", "block");
+
+        // Generate the questionnaire
+        // Start with handedness
+        var questionsHtml = '<div id="qMessages"></div>';
+        questionsHtml += '<div class="qInstr" style="line-height:130%; margin-bottom:15px">' +
+            getResource('handedness_message') +
+            '</div>'; // closes instructions
+        questionsHtml += '<div class="table">';
+        questionsHtml += '<p class="row">';
+        // headers
+        questionsHtml += '<span class="cell"></span>';
+        questionsHtml += '<span class="cell">' + getResource('handedness_always_left') + "&nbsp;" + "&nbsp;" + '</span>';
+        questionsHtml += '<span class="cell">' + getResource('handedness_usually_left') + "&nbsp;" + "&nbsp;" + '</span>';
+        questionsHtml += '<span class="cell">' + getResource('handedness_both_equally') + "&nbsp;" + "&nbsp;" + '</span>';
+        questionsHtml += '<span class="cell">' + getResource('handedness_usually_right') + "&nbsp;"+ "&nbsp;" + '</span>';
+        questionsHtml += '<span class="cell">' + getResource('handedness_always_right') + '</span>';
+        questionsHtml += '</p>'; // closes row
+
+        var handednessOptions = [
+            getResource("label_handwriting"),
+            getResource("label_throwing"),
+            getResource("label_brushing_teeth"),
+            getResource("label_eating_with_spoon")
+        ];
+        var rowIndex = 0;
+        handednessOptions.forEach(function(label) {
+            var idx = 0;
+            var cellId = 'handedness_' + rowIndex.toString() + '_' + idx.toString();
+            questionsHtml += '<p class="row">';
+            questionsHtml += '<span class="cell" id="label_handedness' +
+                rowIndex
+                .toString() +
+                '">' +
+                label +
+                '*</span>';
+            var radioName = 'hand_radio_' + rowIndex.toString();
+            questionsHtml += '<span class="cell center-radio"><input type="radio" id="' +
+                cellId +
+                '" name="' +
+                radioName +
+                '" value="' +
+                idx.toString() +
+                '"/></span>';
+            cellId = 'handedness_' + rowIndex.toString() + '_' + (++idx).toString();
+            questionsHtml += '<span class="cell center-radio"><input type="radio" id="' +
+                cellId +
+                '" name="' +
+                radioName +
+                '" value="' +
+                idx.toString() +
+                '"/></span>';
+            cellId = 'handedness_' + rowIndex.toString() + '_' + (++idx).toString();
+            questionsHtml += '<span class="cell center-radio"><input type="radio" id="' +
+                cellId +
+                '" name="' +
+                radioName +
+                '" value="' +
+                idx.toString() +
+                '"/></span>';
+            cellId = 'handedness_' + rowIndex.toString() + '_' + (++idx).toString();
+            questionsHtml += '<span class="cell center-radio"><input type="radio" id="' +
+                cellId +
+                '" name="' +
+                radioName +
+                '" value="' +
+                idx.toString() +
+                '"/></span>';
+            cellId = 'handedness_' + rowIndex.toString() + '_' + (++idx).toString();
+            questionsHtml += '<span class="cell center-radio"><input type="radio" id="' +
+                cellId +
+                '" name="' +
+                radioName +
+                '" value="' +
+                idx.toString() +
+                '"/></span>';
+            questionsHtml += '</p>';
+            rowIndex++;
+        });
+        // Close table of handedness and start a new one for the other questions
+        questionsHtml += '</div>';
+        questionsHtml += '<div class="table" style="margin-top: 15px">';
+
+        var createQuestionFunction = function(qid, labelValue, optionValues, defaultOption) {
+            // qid: text identifier for the html elements created
+            // labelValue: label for the question
+            // optionValues: options for the resource
+            questionsHtml += '<p class="row">';
+            questionsHtml += '<span class="cell">';
+            questionsHtml += '<label id="label_' + qid + '" for="' + qid + '">' + labelValue + '* </label>';
+            questionsHtml += '</span>';
+            questionsHtml += '<span class="cell">';
+            questionsHtml += '<select id="' + qid + '" class="question_entry">';
+            questionsHtml += '<option value="0"/>';
+            var idx = 1;
+            optionValues.forEach(function(value, idx) {
+                selected = (defaultOption === idx) ? "selected" : "";
+                questionsHtml += '<option value="' + idx.toString() + '"' + selected + '>' + value + '</option>';
+                idx++;
+            });
+            questionsHtml += '</select>';
+            questionsHtml += '</span>';
+            questionsHtml += '</p>';
+        };
+
+        var createQuestionWithOptionsFunction = function (qid, labelValue, optionValues)
+        {
+            // qid: text identifier for the html elements created
+            // labelValue: label for the question
+            // optionvalues: options for the question
+            questionsHtml += '<div class="row" id="id-languages-selection">';
+            questionsHtml += '<span class="cell">';
+            questionsHtml += '<label id="label_' + qid + '" for="' + qid + '">' + labelValue + '* </label>';
+            questionsHtml += '</span>';
+
+            // Sort alphabetically and group in rows of 2 each. 
+            optionValues.sort();
+            var optionRows = [];
+            var halfWay = Math.ceil(optionValues.length / 2);
+            for (var i = 0; i < halfWay; ++i) {
+                var leftIndex = i;
+                var rightIndex = i + halfWay;
+                optionRows[i] = [optionValues[leftIndex], ((rightIndex < optionValues.length) ? optionValues[rightIndex] : undefined)];
+            }
+
+            optionRows.forEach(function(row, idx) {
+                var idLeft = qid+"-checkbox-" + idx.toString();
+                var idRight = qid+"-checkbox-" + (idx + halfWay).toString();
+
+                questionsHtml += '<p class="row">';
+                questionsHtml += '<span class="cell" style="padding-left: 50px;">';
+                questionsHtml += '<input type="checkbox" id="'+idLeft+'"/><label for="'+idLeft+'">'+row[0]+'</label>';
+                questionsHtml += '</span>';
+                questionsHtml += '<span class="cell" style="padding-left: 15px">';
+                if (row[1] !== undefined) {
+                    questionsHtml += '<input type="checkbox" id="'+idRight+'"/><label for="'+idRight+'">'+row[1]+'</label>';
+                }
+                questionsHtml += '</span>';
+
+            });
+            questionsHtml += '</div>';
+        };
+
+        // Computer used
+        createQuestionFunction('computer', getResource('label_question_computer'), getResources('option_computer'), 0);
+        createQuestionFunction('browser', getResource('label_question_browser'), getResources('option_browser'), 0);
+        createQuestionFunction('keyboard', getResource('label_question_keyboard'), getResources('option_keyboard'), 0);
+        createQuestionWithOptionsFunction('languages', getResource('label_question_language'), getResources('option_language'));
+        createQuestionFunction('disorder', getResource('label_question_disorder'), getResources('option_disorder'), 1);
+        createQuestionFunction('education', getResource('label_question_education'), getResources('option_education'), 1);
+        createQuestionFunction('repetition', getResource('label_question_repetition'), getResources('option_repetition'), 0);
+
+        questionsHtml += '</div>'; // closes table
+        $("#questionnaire").html(questionsHtml);
+    }
+
+    function finish() {
+
+        clearText();
+        $("#continue").html(getResource("finish"));
+        resultsDownloaded(false);
+        $("#title").text(getResource("contacting_server"));
+        $("#instr").text(getResource("no_close"));
+        $("#download").removeAttr("hidden");
+        $("#download").text(getResource("download"));
+        $("#download").attr("onClick", "outputIdfx()");
+
+        sendDataToServer();
+    }
+
+    /*
+     * Toggles the 'continue' button at the end of the copytask so that
+     * it is only visible after the user has saved the data in some way:
+     * either through (1) downloading locally, or (2) having the data
+     * succesfully sent to the remote server.
+     */
+    function resultsDownloaded(haveBeenDownloaded) {
+
+        if (haveBeenDownloaded) {
+            // Data has been downloaded, activate button.
+            $("#continue").removeAttr("hidden");
+            $("#continue").attr("style", "float: right");
+
+            // Unset the hardcoded 'onClick' for the continue button.
+            $("#continue").prop('onclick', null).off('click');
+            $("#continue")
+                .click(function() {
+                    window.onbeforeunload = null;
+                    location.reload(false);
+                });
+
+        } else {
+            // Data has not yet been downloaded, hide button.
+            $("#continue").attr("hidden", "hidden");
+        }
+
+    }
+
+    function sendDataToServer() {
+        var finishedFile = encodeURIComponent(eventsToXML(events));
+
+        // URL Magic to get the connection to the server to work
+        // On the server the path must be window.location/Website/Idfx/UploadAjax
+        // Locally we do not have the website and must use window.location/Idfx/UploadAjax
+        var pathname = window.location.pathname;
+        var pathparts = pathname.split('/').slice(1); // Slice to ignore leading '/'
+        var pathprefix = null;
+        if (pathparts[0].toUpperCase() !== "copytask".toUpperCase()) {
+            var copytaskIndex = pathparts.indexOfCI("copytask");
+            if (copytaskIndex !== -1) {
+                var pathPrefixElements = pathparts.slice(0, copytaskIndex);
+                pathprefix = pathPrefixElements.join('/');
+            } else {
+                pathprefix = "";
+            }
+        }
+        var postURL = [pathprefix, "Idfx/UploadAjax"].join('/');
+        var postURL = ((postURL.charAt(0) === '/') ? postURL : '/' + postURL);
+
+        $.ajax({
+                type: "POST",
+                url: postURL,
+                timeout: 10000,
+                data: {
+                    file: finishedFile,
+                    copytask: copytaskName,
+                    session: sessionObject.getSession(),
+                    participant: sessionObject.getParticipant()
+                }
+            })
+            .done(function(data) {
+                $("#title").text(getResource("thanks"));
+                $("#instr").text(getResource("download_finish"));
+                $("#resend").attr("hidden", "hidden");
+                $("#instr").removeClass("error");
+                resultsDownloaded(true);
+
+            })
+            .fail(function(data) {
+                $("#instr").text(getResource("fail"));
+                $("#instr").addClass("error");
+                $("#resend").click(sendDataToServer);
+                $("#resend").text(getResource("resend"));
+                $("#resend").removeAttr("hidden", "hidden");
+            });
+    }
+
+    function outputIdfx() {
+        filename = [sessionObject.getParticipant(), copytaskName, getTodayTimestamp()].join('_') + ".idfx";
+        var blob = new Blob([eventsToXML(events)], { type: "text/plain;charset=utf-8" });
+        saveAs(blob, filename);
+        resultsDownloaded(true);
+    }
+
+</script>
+</head>
+<body oncopy="return false" oncut="return false" onpaste="return false">
+<div class="page">
+
+    <div id="header" align="left">
+        <div>
+            <a href="http://www.inputlog.net">
+                <img src="../Content/banner_simple.PNG" alt="Inputlog logo"/>
+            </a>
+            <h1>Inputlog</h1>
+        </div>
+    </div>
+
+    <div id="topbar"></div>
+    <div id="contentwrapper">
+        <div id="menucontainer" align="left">
+            <div id="task_title_small"></div>
+            <br/>
+            <ul class="menu">
+                <li>
+                    <a id="quit" hidden="hidden" href="#">Quit</a>
+                </li>
+            </ul>
+        </div>
+
+        <div id="main" align="left">
+            <div>
+                <h2 id="title">Select a copy task</h2>
+                <div id="title2" hidden="hidden"></div>
+            </div>
+            <div id="instr"></div><br/>
+            <div id="targetDiv" style="display: none">
+                <span id="targetIcon" class="genericon genericon-rightarrow"></span>
+                <span id="target" class="unselectable"></span>
+                <span id="timing">
+                        <span id="timingInfo">30 s</span>
+                        <!--<span id="timingIcon" class="genericon genericon-time"></span>-->
+                        <span>
+                            <span>
+                            </span>
+                            <input type="text" id="timingIcon" value="0"
+                                   class="dial" data-fgcolor="#333567" data-width="14" data-height="14" data-linecap="round"
+                                   data-displayinput="false" readonly="true" />
+                        </span>
+                    </span>
+            </div>
+            <div id="comment"></div>
+
+            <div id="sessioninfo" style="display: none">
+                <div class="table">
+                    <p class="row">
+                        <label class="cell label" for="participant" id="name_label">Full Name*</label>
+                        <input class="cell" id="participant" type="text"/>
+                    </p>
+                    <p class="row">
+                        <label class="cell label" for="age" id="age_label">Age*</label>
+                        <input class="cell" id="age" type="text"/>
+                    </p>
+                    <p class="row">
+                        <label class="cell label" for="gender" id="gender_label">Gender </label>
+                        <select id="gender" class="cell"></select>
+                    </p>
+                    <p class="row">
+                        <label class="cell label" for="session" id="session_label">Session </label>
+                        <input class="cell" id="session" type="text"/>
+                    </p>
+                    <p class="row">
+                        <label class="cell label" for="layout" id="layouts_label">Keyboard*</label>
+                        <select class="cell" id="layouts"></select>
+                        <a href="keyboard_popup.html" target="_blank" onclick="window.open('keyboard_popup.html', 'keyboard selection helper', 'width=600, height=600')">
+                            <img src="../Content/info.png" width="19" height="19"
+                                 title="Click for more information"/>
+                        </a>
+                    </p>
+                </div>
+                <div id="agreement">
+                    <input id="agreementCheck" type="checkbox" name="acknowledge" />
+                </div>
+
+                <br/>
+                <button id="continue-button">Continue</button>
+            </div>
+
+            <div id="questionnaire" display="none">
+            </div>
+
+            <p>
+                <div class="container" id="inputcontainer" style="display: none">
+                    <div class="line-nums">
+                        <span></span></div>
+                    <textarea id="inputarea" rows="4" spellcheck="false"></textarea>
+                </div>
+            </p>
+
+
+            <button id="download" hidden="hidden" onclick="">Download</button>
+            <button id="resend" hidden="hidden">Resend</button>
+            <button id="continue" hidden="hidden" onclick="advance()">Continue</button>
+
+            <div id="tasks">
+                <div align="left" id="task-div">
+                </div>
+                <div style="margin-top: 30px; margin-bottom: 50px;">
+                    <form id="fileChooser">
+                        <label>Upload local copy task | Browse</label>
+                        <input style="padding-left: 10px" type="file" value="" name="file" id="file"/>
+                    </form>
+                </div>
+
+                <div class="contr">
+                    <div class="contr-row">
+                        <div id="contributions">
+                            <!--<span>copyright Marielle Leijten and Luuk Van Waes - University of Antwerp</span>-->
+                            <span>
+                                    This copy task has been developed by Luuk van Waes and Marielle Leijten (University of Antwerp, Belgium).
+                                    The analysis is part of Inputlog (wwww.inputlog.net).
+                                </span>
+                            <span>We thank the following colleagues for their help in developing the different language versions:</span>
+                            <ul>
+                                <li>English: Lise Fontaine (Cardiff University, UK) &amp; Mark Torrance (Nothingham University, UK)</li>
+                                <li>French: Thierry Olive (CNRS@University of Poitiers, France)</li>
+                                <li>German: Esther Breuer (University of Cologne, Germany)</li>
+                                <li>Polish: Olga Witczak (Adam Mickiewicz University, Poland)</li>
+                                <li>Spanish: Anna Sala (University of Barcelona, Spain)</li>
+                                <li>Swedish: Asa Wengelin (University of Gothenburgh, Sweden) &amp; Victoria Johansson (University of Lund, Sweden)</li>
+                                <li>Turkish: Gulay Tiryakioglu (University of Lyon 2, France)</li>
+                                <li>Welsh: Lise Fontaine (Cardiff University, UK)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="contr-row">
+                        <div id="ccrow">
+                            <span><img src="../Content/cc.png" /></span>
+                            <span>
+                                    Although much care has been taken to ensure the accuracy, completeness and reliability of
+                                    the elements provided in this copy task, we make no representations or warranties of any kind,
+                                    express or implied, about the completeness, accuracy, reliability and suitability.
+                                </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="linkcontainer">
+            <div id="progressContainer" style="display: none">
+                <div id="progresstext"></div>
+                <div id="slider">
+                    <div id="sliderbar">
+                    </div>
+                    <!--<div id="szazalek">-->
+                    <!--</div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="footer">
+</div>
+
+</body>
+</html>

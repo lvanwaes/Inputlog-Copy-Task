@@ -1,0 +1,480 @@
+body, html
+{
+    height: 100%;
+}
+
+body
+{
+    background-color: #ffffff;
+    font-size: 100%;
+    margin: 0;
+    padding: 0;
+    color: #333366;
+    line-height: 15px;
+    font-family: "Verdana", "Tahoma", "Microsoft sans serif"; 
+}
+
+span.semibr
+{
+    display: block;
+    margin: 6px 0;
+}
+
+a img
+{
+    border: none;
+}
+
+a:link
+{
+    color: #660000;
+    text-decoration: none;
+}
+a:visited
+{
+    color: #330000;
+}
+a:hover
+{
+    color: #cc7700;
+}
+a:active
+{
+    color: #330000;
+}
+
+p, ul
+{
+    margin-bottom: 20px;
+    line-height: 1.6em;
+}
+
+ol { font-weight: bold }
+ol li { font-weight: normal }
+
+/* HEADINGS   
+----------------------------------------------------------*/
+h1, h2, h3, h4, h5, h6
+{
+    font-size: 1.33em;
+    color: #660000;
+    font-family: Verdana, Tahoma, sans-serif;
+    font-weight: bold;
+}
+
+h1
+{
+    font-size: 2em;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+h2
+{
+    font-size: 125%;
+    margin-bottom: 16px;
+}
+h3
+{
+    font-size: 110%;
+}
+h4
+{
+    font-size: 100%;
+}
+h5, h6
+{
+    font-size: 1em;
+}
+
+div.section
+{
+    margin-top: -8px;
+}
+
+/* this rule styles <h2> tags that are the 
+first child of the left and right table columns */
+.rightColumn > h1, .rightColumn > h2, .leftColumn > h1, .leftColumn > h2
+{
+    margin-top: 0;
+}
+
+/* PRIMARY LAYOUT ELEMENTS   
+----------------------------------------------------------*/
+
+/* you can specify a greater or lesser percentage for the 
+page width. Or, you can specify an exact pixel width. */
+.page
+{
+    width: 1000px;
+    background-color: #f7f7f7;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+
+#header
+{
+    margin-bottom: 0px;
+    padding: 8px 0;
+    width: 100%;
+    background-color: White;
+}
+
+#header h1
+{
+    vertical-align: top;
+    display: inline-block;
+    font-weight: bold;
+    padding: 5px 0;
+    margin: 0;
+    margin-top: 10px;
+    margin-left: 40px;
+    color: #333366;
+    border: none;
+    line-height: 2em;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 32px !important;
+    display: none;
+}
+
+#topbar
+{
+    height: 20px;
+    width: 1000px;
+    border-bottom: 1px solid #ffffff;
+}
+
+#footer
+{
+    height: 18px;
+    width: 1000px;
+    display: block;
+    margin: 0 auto;
+    background-color: #f7f7f7;
+    text-align: center;
+    line-height: normal;
+    font-size: .9em;
+    font-size: 70%;
+    padding-top: 2px;
+}
+
+ul.menu li.current
+{
+    font-weight: bold;
+}
+
+ul.menu
+{
+    margin: 0;
+    height: 56px;
+    font-size: 70%;
+    list-style-type: none;
+}
+
+ul.menu a, ul.usercontrol a
+{
+    color: #333366;
+}
+
+ul.menu a:hover, ul.usercontrol a:hover
+{
+    color: #050520;
+}
+
+#usercontrol
+{
+    position: absolute;
+    right: 24px;
+    top: 36px;
+}
+
+#usercontrol li
+{
+    display: inline;
+    list-style-type: none;
+}
+
+#linkcontainer ul, #menucontainer ul
+{
+    padding-left: 0;
+}
+
+#linkcontainer
+{
+    display: inline-block;
+    width: 130px;
+    vertical-align: top;
+    padding: 20px;
+    margin: 0;
+    height: inherit;
+}
+
+#linkcontainer h3
+{
+    margin-bottom: 0;
+}
+
+#linkcontainer ul
+{
+    margin-top: 0;
+    list-style-type: none;
+}
+
+#menucontainer
+{
+    padding: 20px;
+    padding-top: 30px;
+    padding-left: 25px;
+    margin: 0;
+    width: 120px;
+    height: inherit;
+    display: inline-block;
+    vertical-align: top;
+}
+
+#contentwrapper
+{
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #ffffff;
+}
+
+#main
+{
+    display: inline-block;
+    background-color: #fff;
+    width: 700px;
+    padding: 20px 20px 60px;
+
+}
+
+#main p:last-child
+{
+    margin-bottom: 0;
+}
+
+
+/* FORM LAYOUT ELEMENTS   
+----------------------------------------------------------*/
+
+fieldset 
+{
+    margin: 1em 0;
+    padding: 1em;
+    border: 1px solid #CCC;
+}
+
+fieldset p 
+{
+    margin: 2px 12px 10px 10px;
+}
+
+legend 
+{
+    font-weight: 600;
+    padding: 2px 4px 8px 4px;
+}
+
+input[type="text"] 
+{
+    width: 200px;
+    border: 1px solid #CCC;
+}
+
+input[type="password"] 
+{
+    width: 200px;
+    border: 1px solid #CCC;
+}
+
+/* TABLE
+----------------------------------------------------------*/
+
+table 
+{
+  border: solid 1px #e8eef4;
+  border-collapse: collapse;
+}
+
+table td 
+{
+  padding: 5px;   
+  border: solid 1px #e8eef4;
+}
+
+table th
+{
+  padding: 6px 5px;
+  text-align: left;
+  background-color: #e8eef4; 
+  border: solid 1px #e8eef4;   
+}
+
+/* MISC  
+----------------------------------------------------------*/
+.unselectable{
+   -moz-user-select: -moz-none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+
+   /*
+     Introduced in IE 10.
+     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+   */
+   -ms-user-select: none;
+   /*user-select: none;*/
+}
+
+
+.clear
+{
+    clear: both;
+}
+
+.error
+{
+    color: Red;
+    font-weight: bold;
+    display: inline-block;
+    padding: 8px 12px;
+    border: 1px solid Red;
+    width: 576px;
+    text-align: center;
+}
+
+.message
+{
+    font-weight: bold;
+    display: inline-block;
+    padding: 8px 12px;
+    border: 1px solid #333366;
+    width: 576px;
+    /* text-align: center; */
+}
+
+.warning
+{
+    color: #ff8c00;
+    font-weight: bold;
+    display: inline-block;
+    padding: 8px 12px;
+    border: 1px solid #ff8c00;
+    width: 576px;
+    text-align: center;
+}
+
+/* Styles for validation helpers
+-----------------------------------------------------------*/
+.field-validation-error
+{
+    color: #ff0000;
+}
+
+.field-validation-valid
+{
+    display: none;
+}
+
+.input-validation-error
+{
+    border: 1px solid #ff0000;
+    background-color: #ffeeee;
+}
+
+.validation-summary-errors
+{
+    font-weight: bold;
+    color: #ff0000;
+}
+
+.validation-summary-valid
+{
+    display: none;
+}
+
+/* Styles for editor and display helpers
+----------------------------------------------------------*/
+.display-label,
+.editor-label,
+.display-field,
+.editor-field
+{
+    margin: 0.5em 0;
+}
+
+.text-box
+{
+    width: 30em;
+}
+
+.text-box.multi-line
+{
+    height: 6.5em;
+}
+
+.tri-state
+{
+    width: 6em;
+}
+
+div#pager
+{
+    margin: 24px auto 36px;
+    width: 280px;
+}
+
+div#pager form
+{
+    margin-left: 160px;
+    width: 280px;
+    font-size: 10px;
+}
+
+div#pager input
+{
+    width: 42px;
+}
+
+div#pager input, div#pager select
+{
+    position: relative;
+    top: -3px;
+}
+
+/* tables */
+table.tablesorter {
+    background-color: #CDCDCD;
+    margin:10px 0pt 15px;
+    width: 100%;
+    text-align: left;
+}
+table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+    background-color: #e6EEEE;
+    border: 1px solid #FFF;
+    padding: 4px;
+}
+table.tablesorter thead tr .header {
+    background-image: url(bg.gif);
+    background-repeat: no-repeat;
+    background-position: center right;
+    cursor: pointer;
+}
+table.tablesorter tbody td {
+    color: #3D3D3D;
+    padding: 4px;
+    background-color: #FFF;
+    vertical-align: top;
+}
+table.tablesorter tbody tr.odd td {
+    background-color:#F0F0F6;
+}
+table.tablesorter thead tr .headerSortUp {
+    background-image: url(asc.gif);
+}
+table.tablesorter thead tr .headerSortDown {
+    background-image: url(desc.gif);
+}
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+background-color: #8dbdd8;
+}
+
+

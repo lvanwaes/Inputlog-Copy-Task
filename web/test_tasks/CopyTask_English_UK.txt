@@ -1,0 +1,59 @@
+<copytask>
+  <title>English_UK</title>
+  <description>procedure to measure typing competence</description>
+  <language>EN</language>
+  <general_instructions>Welcome
+
+In this session we will ask you to type letters, words and sentences that are shown on the screen.
+Try to do this as fast and error free as possible.
+If you make a mistake, it is not necessary to correct it. Typing mistakes are no problem. You can just continue typing. Correctness is less important than your typing speed.
+</general_instructions>
+  <layouts>
+    <layout>AZERTY</layout>
+    <layout>QWERTY</layout>
+    <layout>QWERTZ</layout>
+  </layouts>
+  <task title="Typing speed" unlimited="true" timelimit="15">
+    <instructions>Continue typing the letters 'd' and 'k' as fast as possible for 15 seconds. The aim is to produce as many letters as possible.
+Your time starts when you type the first character.</instructions>
+    <target>dkdkdkdkdkdkdkdkdkdkdkdkdkdk... </target>
+  </task>
+  <task title="Sentence" unlimited="true" timelimit="30">
+    <instructions>Type the sentence below as fast as possible for 30 seconds.
+Don't use capital letters or full stops: press 'Enter' after each sentence.
+
+Your time will start after you have typed the first character. .</instructions>
+    <target>the cat was sleeping under the apple tree</target>
+  </task>
+  <task title="Example 1" repetition="7" example="true">
+    <instructions>This is an example. 
+In the following tasks we will ask you to type a series of three words seven times.
+In this example this was done for the words: 'a beautiful morning'.
+For this task there is no time limit. 
+</instructions>
+    <target>a beautiful morning</target>
+  </task>
+  <task title="Words 1" synthesize="true" repetition="7">
+    <instructions>Type these words seven times.
+To go to the next line, press 'Enter'.
+</instructions>
+    <target>four interesting questions</target>
+  </task>
+  <task title="Words 2" synthesize="true" repetition="7">
+    <instructions>Type these words seven times.
+</instructions>
+    <target>seven wonderful surprises</target>
+  </task>
+  <task title="Words 3" synthesize="true" repetition="7">
+    <instructions>Type these words seven times.</instructions>
+    <target>five important behaviours</target>
+  </task>
+  <task title="Words 4" repetition="7">
+    <instructions>Type these words seven times.</instructions>
+    <target>some awkward zigzags</target>
+  </task>
+  <task title="Consonants">
+    <instructions>Finally, type these four blocks of consonants once. </instructions>
+    <target>tjxgfl pgkfkq dtdrgt npwdvf</target>
+  </task>
+</copytask>

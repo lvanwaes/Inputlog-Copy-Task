@@ -1,0 +1,153 @@
+<resources>
+ <session_info>
+      <participant_information>Participant information</participant_information>
+      <intro>Please enter some information about yourself and the copytask session.</intro>
+	<name_label>Full Name</name_label>
+	<age_label>Age</age_label>
+	<gender>Gender</gender>
+	<gender_types> 
+	  <male>M (male)</male>
+	  <female>F (female)</female>
+	  <undefined>X (other)</undefined>
+	</gender_types>
+	<session>Session</session>
+	<kblayout>Keyboard</kblayout>
+ </session_info>
+ 
+ <buttons>
+	<start>Start</start>
+	<continue>Continue</continue>
+	<finish>Finish</finish>
+	<download>Download data</download>
+	<resend>Resend</resend>
+	<progress>Progress</progress>
+</buttons>
+
+<messages>
+	<!-- Alert for session identification: you must enter your name -->
+	<enter_name>Please enter your name.</enter_name>
+	<!-- Alert for session identification: you must provide a valid age -->
+	<valid_age>Please enter a valid age.</valid_age>
+	<!-- Select a keyboard layout -->
+	<select_layout>Select the keyboard layout you are using.</select_layout>
+	<!-- Title for: successfully transmitted and copytask downloaded -->
+	<thanks>Thanks for participating in this copy task</thanks>
+	<!-- Message for: Successfully transmitted and copytask completed -->
+	<download_finish>You can download your idfx or finish to go back to the overview.</download_finish>
+	<!-- Alert for: Time to complete a copytask has finished -->
+	<time_up>Out of time</time_up>
+	<!-- Alert for: message when trying to close the copytask before completing the task and or transmitting/downloading the results -->
+	<alert_closing>Are you sure you want to cancel this copy task?</alert_closing>
+	<!-- Title for: we are trying to transmit your data to the server -->
+	<contacting_server>Saving your data to the webserver...</contacting_server>
+	<!-- Message for: we are trying to transmit your data to the server (please wait) -->
+	<no_closing>Do not close this window yet. Meanwhile you may also download the data onto your computer if you like.</no_closing>
+	<!-- Message for: we could not transmit your data to the server -->
+	<fail>Could not upload the file to the server. Please download it locally, or try again using the resend button.</fail>
+</messages>
+
+<agreement>
+I agree to take part in this study. I understand that taking part in the project will involve my typing being recorded during this session. 
+I understand that my taking part is voluntary; I can withdraw from the study at any time and I do not have to give any reason for why I no longer want to take part.
+I understand that my data will be stored on the secure Inputlog server at the university of Antwerp. Only authenticated researchers will have access to these data on the condition that they agree to preserve the confidentiality of the data collected.
+</agreement>
+
+<agreement_required>
+Please, tick here to indicate that you agree to take part in this study.
+</agreement_required>
+
+<questionnaire>
+	<!-- Header of the questionnaire page -->
+	<questions_title>Final Questions</questions_title>
+
+	<!-- Alerts for required questionnaire information -->
+	<alerts>
+			<error_required>Please answer all questions(*)</error_required>
+	</alerts>
+
+<!-- Questions about handedness -->
+	<handedness_message>Please indicate your preferences in the use of <em>hands</em> in the following activities:</handedness_message>
+	<handedness_always_left>always left</handedness_always_left>
+		<handedness_usually_left>usually left</handedness_usually_left>
+		<handedness_both_equally>no preference</handedness_both_equally>
+		<handedness_usually_right>usually right</handedness_usually_right>
+		<handedness_always_right>always right</handedness_always_right>
+		<label_handwriting>handwriting</label_handwriting>
+		<label_throwing>throwing</label_throwing>
+		<label_brushing_teeth>brushing teeth</label_brushing_teeth>
+		<label_eating_with_spoon>eating with spoon</label_eating_with_spoon>
+
+<!-- Other questions -->
+	<!-- Computer used -->
+	<label_question_computer>Computer used in this test?</label_question_computer>
+	<options_question_computer>
+		<option_computer>desktop</option_computer>
+		<option_computer>laptop</option_computer>
+	</options_question_computer>
+
+	<!-- Keyboard familiarity -->
+	<label_question_keyboard>Keyboard used in this test?</label_question_keyboard>
+	<options_question_keyboard>
+		<option_keyboard>very familiar</option_keyboard>
+		<option_keyboard>familiar</option_keyboard>
+		<option_keyboard>not familiar</option_keyboard>
+	</options_question_keyboard>
+
+<!-- Browser used -->
+	<label_question_browser>Browser used in this test?</label_question_browser>
+	<options_question_browser>
+		<option_browser>Google Chrome</option_browser>
+		<option_browser>Internet Explorer</option_browser>
+		<option_browser>Edge</option_browser>
+		<option_browser>Mozilla Firefox</option_browser>
+		<option_browser>Opera</option_browser>
+		<option_browser>Safari</option_browser>
+		<option_browser>don't know</option_browser>
+		<option_browser>other</option_browser>
+	</options_question_browser>
+
+	<!-- Which dominant language(s) do you use in writing? -->
+	<label_question_language>Dominant languages</label_question_language>
+		<options_question_language>
+			<option_language>English</option_language>
+			<option_language>Welsh</option_language>
+			<option_language>French</option_language>
+			<option_language>German</option_language>
+			<option_language>Dutch</option_language>
+			<option_language>Polish</option_language>
+			<option_language>Spanish</option_language>
+			<option_language>Swedish</option_language>
+			<option_language>Turkish</option_language>
+			<option_language>other</option_language>
+		</options_question_language>
+
+	<!-- Language disorder -->
+	<label_question_disorder>Do you experience any language, reading, or writing difficulties? </label_question_disorder>
+	<options_question_disorder>
+		<option_disorder>yes</option_disorder>
+		<option_disorder>no</option_disorder>
+		<option_disorder>don't know</option_disorder>
+	</options_question_disorder>
+	
+<!-- Highest level of education -->
+	<label_question_education>What is your highest level of education?</label_question_education>
+		<options_question_education>
+			<option_education>primary education</option_education>
+			<option_education>secondary education</option_education>
+			<option_education>post-secondary education not leading to a degree</option_education>
+			<option_education>undergraduate degree</option_education>
+			<option_education>postgraduate degree</option_education>
+			<option_education>doctoral degree</option_education>
+		</options_question_education>
+
+<!-- Highest level of repetition -->
+		<label_question_repetition>Is this the first time that you performed this task?</label_question_repetition>
+		<options_question_repetition>
+			<option_repetition>yes</option_repetition>
+			<option_repetition>no</option_repetition>
+		</options_question_repetition>
+
+	</questionnaire>
+</resources>
+
+

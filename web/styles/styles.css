@@ -1,0 +1,208 @@
+body{
+    text-align:center;
+    padding:50px;
+}
+
+textarea{
+    width: 505px;/* The following three rules make a difference in the script */
+    overflow:hidden;
+    line-height: 16px;
+    font-size: 16px;
+    border:1px solid #999;
+    padding:9px;
+    margin-left: 10px;
+    font-family: monospace;
+    margin-left: 10px;
+    display:block;
+    outline:none;
+    resize:none;
+}
+    
+textarea:focus{
+    border-color:#333;
+}
+
+.container{
+    position:relative;
+    display:inline-block;
+}
+
+.line-nums{
+    font-size:16px;
+    line-height:16px;
+    padding-top: 10px;
+    font-family: monospace;
+    background: #EEE;
+    position: absolute;
+    width: 28px;
+    left: -18px;
+    bottom: 0;
+    top: 0;
+    text-align:center;
+}
+
+#task_title_small {
+    padding-top: 2px;
+    line-height: 150%;
+}
+
+#continue {
+    margin-right: 50px;
+    margin-left: 10px;
+}
+
+#timing {
+    float: right;
+    margin-right: 65px;
+}
+
+#timingIcon {
+    font-size: 20px;
+}
+
+.timeup {
+    border: 1px solid darkred;
+    background: #EBEBE4;
+    color: darkred;
+    text-align: center;
+    width: 300px;
+    margin: 0 auto;
+}
+
+#instr {
+    font-size: 12pt;
+    line-height: 160%;
+}
+
+#target {
+    font-size: 12pt;
+    color: darkred;
+}
+
+#title2 {
+    font-weight: bold;
+    padding-bottom: 10px;
+}
+
+.table {
+    display: table;
+}
+.row {
+    display: table-row;
+}
+.cell {
+    display: table-cell;
+    margin-right:;
+}
+.label {
+    text-align: right;
+    padding-right: 20px;
+    font-size: 11pt;
+}
+.fielderror {
+     border: 1px solid red;
+}
+
+.question_entry {
+    margin-left: 20px;
+    width: 325px;
+}
+
+input#disorder_specify {
+    width: 320px;
+}
+
+.question_error {
+    color: red;
+    padding-bottom: 25px;
+}
+
+#questionnaire {
+    font-size: 0.85em;
+}
+
+.center-radio {
+    text-align: center;
+}
+
+
+/* Slider progress bar: http://ruwix.com/simple-javascript-html-css-slider-progress-bar
+*/
+#progresstext {
+    margin-top: 12px;
+    margin-bottom: 22px;
+}
+#slider {
+    width:100%;
+    height:12px;
+    border:1px solid #000;
+    overflow:hidden; 
+    border-radius: 4px;
+}
+#sliderbar {
+    width:10%;
+    height:12px;
+    border-right: 1px solid #000000;
+    background: #333366; 
+}
+
+#agreement {
+    font-size: .9em;
+    font-size: 70%;
+    padding-top: 15px;
+}
+
+.contr 
+{
+    text-align:left;
+    display:table;
+    margin-left:auto;
+    margin-right:auto;
+    margin: 0 auto;
+    text-align: center;
+    line-height: normal;
+    font-size: .9em;
+    font-size: 70%;
+    padding-top: 2px;
+    padding-bottom:10px;
+}
+
+.contr-row
+{
+    text-align:left;
+}
+
+#contributions
+{
+    vertical-align:middle;
+    overflow:hidden;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+#ccrow 
+{
+    vertical-align:middle;
+    overflow:hidden;
+    margin-left:auto;
+    margin-right:auto;
+
+}
+
+#ccrow span 
+{
+    display:block;
+    text-align:left;
+    padding-left:5px;
+    margin-left:0px;
+    margin-top:10px;
+}
+
+#ccrow span img
+{
+    float:left;
+    display:block;
+    width:120px;
+    height:40px;
+    margin-right:10px;
+}

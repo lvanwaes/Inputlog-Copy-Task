@@ -1,0 +1,15 @@
+﻿<copytask>
+  <title>Eenvoudige test</title>
+  <description>Test met maar 1 vraag</description>
+  <language>NL</language>
+  <general_instructions title="Algemene instructies" start_button="Start" continue_button="Ga verder" finish_button="Beëindig" previous_button="Vorige">Dit is een kopiëertaak met maar één vraag.</general_instructions>
+  <layouts>
+    <layout>AZERTY</layout>
+    <layout>QWERTY</layout>
+    <layout>QWERTZ</layout>
+  </layouts>
+  <task title="Vraag 1" repetition="3">
+    <instructions>Schrijf over</instructions>
+    <target>Rararara</target>
+  </task>
+</copytask>
