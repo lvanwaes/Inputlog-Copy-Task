@@ -74,7 +74,7 @@
             // AddButton
             // 
             this.AddButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.AddButton.Image = global::GUI.Properties.Resources.add;
+            this.AddButton.Image = global::TaskCreator.Properties.Resources.add;
             this.AddButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.AddButton.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.AddButton.Location = new System.Drawing.Point(3, 680);
@@ -175,7 +175,7 @@
             // AddTextBlockButton
             // 
             this.AddTextBlockButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.AddTextBlockButton.Image = global::GUI.Properties.Resources.add;
+            this.AddTextBlockButton.Image = global::TaskCreator.Properties.Resources.add;
             this.AddTextBlockButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.AddTextBlockButton.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.AddTextBlockButton.Location = new System.Drawing.Point(253, 680);
@@ -192,7 +192,7 @@
             // AddExampleButton
             // 
             this.AddExampleButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.AddExampleButton.Image = global::GUI.Properties.Resources.add;
+            this.AddExampleButton.Image = global::TaskCreator.Properties.Resources.add;
             this.AddExampleButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.AddExampleButton.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.AddExampleButton.Location = new System.Drawing.Point(124, 680);
@@ -283,7 +283,7 @@
             // AddPracticeButton
             // 
             this.AddPracticeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.AddPracticeButton.Image = global::GUI.Properties.Resources.add;
+            this.AddPracticeButton.Image = global::TaskCreator.Properties.Resources.add;
             this.AddPracticeButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.AddPracticeButton.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.AddPracticeButton.Location = new System.Drawing.Point(385, 680);

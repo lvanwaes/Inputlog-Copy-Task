@@ -37,29 +37,29 @@
             this.InstructionsTextField = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.TitleTextField = new System.Windows.Forms.TextBox();
-            this.pictClose = new System.Windows.Forms.PictureBox();
-            this.moveUp = new System.Windows.Forms.PictureBox();
-            this.moveDown = new System.Windows.Forms.PictureBox();
             this.lblTimes = new System.Windows.Forms.Label();
             this.linkImage = new System.Windows.Forms.LinkLabel();
             this.btnChooseImage = new System.Windows.Forms.Button();
             this.lblType = new System.Windows.Forms.Label();
             this.btnChooseSound = new System.Windows.Forms.Button();
-            this.removeAudio = new System.Windows.Forms.PictureBox();
-            this.removeImage = new System.Windows.Forms.PictureBox();
             this.lblSeconds = new System.Windows.Forms.Label();
             this.nudTimeLimit = new System.Windows.Forms.NumericUpDown();
             this.cbTimeLimit = new System.Windows.Forms.CheckBox();
             this.cbUnlimited = new System.Windows.Forms.CheckBox();
             this.myToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.cbSynthesis = new System.Windows.Forms.CheckBox();
+            this.removeImage = new System.Windows.Forms.PictureBox();
+            this.removeAudio = new System.Windows.Forms.PictureBox();
+            this.moveDown = new System.Windows.Forms.PictureBox();
+            this.moveUp = new System.Windows.Forms.PictureBox();
+            this.pictClose = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudRepetitionFrequency)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictClose)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.moveUp)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.moveDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.removeAudio)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.removeImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTimeLimit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.removeImage)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.removeAudio)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.moveDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.moveUp)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictClose)).BeginInit();
             this.SuspendLayout();
             // 
             // TargetTextField
@@ -159,43 +159,6 @@
             this.TitleTextField.Size = new System.Drawing.Size(579, 20);
             this.TitleTextField.TabIndex = 10;
             // 
-            // pictClose
-            // 
-            this.pictClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictClose.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictClose.Image = global::GUI.Properties.Resources.cross_grey;
-            this.pictClose.InitialImage = null;
-            this.pictClose.Location = new System.Drawing.Point(742, 3);
-            this.pictClose.Name = "pictClose";
-            this.pictClose.Size = new System.Drawing.Size(17, 17);
-            this.pictClose.TabIndex = 52;
-            this.pictClose.TabStop = false;
-            this.pictClose.Click += new System.EventHandler(this.PictCloseClick);
-            // 
-            // moveUp
-            // 
-            this.moveUp.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.moveUp.Image = global::GUI.Properties.Resources.up;
-            this.moveUp.InitialImage = null;
-            this.moveUp.Location = new System.Drawing.Point(3, 3);
-            this.moveUp.Name = "moveUp";
-            this.moveUp.Size = new System.Drawing.Size(17, 17);
-            this.moveUp.TabIndex = 53;
-            this.moveUp.TabStop = false;
-            this.moveUp.Click += new System.EventHandler(this.MoveUpClick);
-            // 
-            // moveDown
-            // 
-            this.moveDown.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.moveDown.Image = global::GUI.Properties.Resources.down;
-            this.moveDown.InitialImage = null;
-            this.moveDown.Location = new System.Drawing.Point(3, 175);
-            this.moveDown.Name = "moveDown";
-            this.moveDown.Size = new System.Drawing.Size(17, 17);
-            this.moveDown.TabIndex = 54;
-            this.moveDown.TabStop = false;
-            this.moveDown.Click += new System.EventHandler(this.MoveDownClick);
-            // 
             // lblTimes
             // 
             this.lblTimes.AutoSize = true;
@@ -252,34 +215,6 @@
             this.btnChooseSound.UseVisualStyleBackColor = true;
             this.btnChooseSound.Visible = false;
             this.btnChooseSound.Click += new System.EventHandler(this.BtnChooseSoundClick);
-            // 
-            // removeAudio
-            // 
-            this.removeAudio.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.removeAudio.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.removeAudio.Image = global::GUI.Properties.Resources.cross_grey;
-            this.removeAudio.InitialImage = null;
-            this.removeAudio.Location = new System.Drawing.Point(565, 132);
-            this.removeAudio.Name = "removeAudio";
-            this.removeAudio.Size = new System.Drawing.Size(17, 17);
-            this.removeAudio.TabIndex = 62;
-            this.removeAudio.TabStop = false;
-            this.removeAudio.Visible = false;
-            this.removeAudio.Click += new System.EventHandler(this.RemoveAudioClick);
-            // 
-            // removeImage
-            // 
-            this.removeImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.removeImage.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.removeImage.Image = global::GUI.Properties.Resources.cross_grey;
-            this.removeImage.InitialImage = null;
-            this.removeImage.Location = new System.Drawing.Point(738, 132);
-            this.removeImage.Name = "removeImage";
-            this.removeImage.Size = new System.Drawing.Size(17, 17);
-            this.removeImage.TabIndex = 63;
-            this.removeImage.TabStop = false;
-            this.removeImage.Visible = false;
-            this.removeImage.Click += new System.EventHandler(this.RemoveImageClick);
             // 
             // lblSeconds
             // 
@@ -346,6 +281,71 @@
             this.cbSynthesis.Text = "Include task in selected component analysis";
             this.cbSynthesis.UseVisualStyleBackColor = true;
             // 
+            // removeImage
+            // 
+            this.removeImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.removeImage.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.removeImage.Image = global::TaskCreator.Properties.Resources.cross_grey;
+            this.removeImage.InitialImage = null;
+            this.removeImage.Location = new System.Drawing.Point(738, 132);
+            this.removeImage.Name = "removeImage";
+            this.removeImage.Size = new System.Drawing.Size(17, 17);
+            this.removeImage.TabIndex = 63;
+            this.removeImage.TabStop = false;
+            this.removeImage.Visible = false;
+            this.removeImage.Click += new System.EventHandler(this.RemoveImageClick);
+            // 
+            // removeAudio
+            // 
+            this.removeAudio.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.removeAudio.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.removeAudio.Image = global::TaskCreator.Properties.Resources.cross_grey;
+            this.removeAudio.InitialImage = null;
+            this.removeAudio.Location = new System.Drawing.Point(565, 132);
+            this.removeAudio.Name = "removeAudio";
+            this.removeAudio.Size = new System.Drawing.Size(17, 17);
+            this.removeAudio.TabIndex = 62;
+            this.removeAudio.TabStop = false;
+            this.removeAudio.Visible = false;
+            this.removeAudio.Click += new System.EventHandler(this.RemoveAudioClick);
+            // 
+            // moveDown
+            // 
+            this.moveDown.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.moveDown.Image = global::TaskCreator.Properties.Resources.down;
+            this.moveDown.InitialImage = null;
+            this.moveDown.Location = new System.Drawing.Point(3, 175);
+            this.moveDown.Name = "moveDown";
+            this.moveDown.Size = new System.Drawing.Size(17, 17);
+            this.moveDown.TabIndex = 54;
+            this.moveDown.TabStop = false;
+            this.moveDown.Click += new System.EventHandler(this.MoveDownClick);
+            // 
+            // moveUp
+            // 
+            this.moveUp.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.moveUp.Image = global::TaskCreator.Properties.Resources.up;
+            this.moveUp.InitialImage = null;
+            this.moveUp.Location = new System.Drawing.Point(3, 3);
+            this.moveUp.Name = "moveUp";
+            this.moveUp.Size = new System.Drawing.Size(17, 17);
+            this.moveUp.TabIndex = 53;
+            this.moveUp.TabStop = false;
+            this.moveUp.Click += new System.EventHandler(this.MoveUpClick);
+            // 
+            // pictClose
+            // 
+            this.pictClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictClose.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pictClose.Image = global::TaskCreator.Properties.Resources.cross_grey;
+            this.pictClose.InitialImage = null;
+            this.pictClose.Location = new System.Drawing.Point(742, 3);
+            this.pictClose.Name = "pictClose";
+            this.pictClose.Size = new System.Drawing.Size(17, 17);
+            this.pictClose.TabIndex = 52;
+            this.pictClose.TabStop = false;
+            this.pictClose.Click += new System.EventHandler(this.PictCloseClick);
+            // 
             // TaskControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -380,12 +380,12 @@
             this.Name = "TaskControl";
             this.Size = new System.Drawing.Size(762, 195);
             ((System.ComponentModel.ISupportInitialize)(this.nudRepetitionFrequency)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictClose)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.moveUp)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.moveDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.removeAudio)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.removeImage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTimeLimit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.removeImage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.removeAudio)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.moveDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.moveUp)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictClose)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
