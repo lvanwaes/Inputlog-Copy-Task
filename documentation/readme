@@ -1,2 +1,8 @@
 This folder contains extra documentation about the copy task analysis and the copy task creator in Inputlog.
  Also an example of an analysis output file is included.
+ 
+The following files are included:
+- Copy Task Flow.pdf: general description of the steps from esign to Analysis;
+- Copy task Analysis_October 2018.pdf: description of the differentcomponents represented in the copy task analysis;
+- Copy task creator.pdf: brief manual for the copy task editor;	
+- Example_output_copy task analysis.pdf: sample output of the copy task analysis.
