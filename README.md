@@ -32,7 +32,7 @@ The copy task is developed in JavaScript (with jQuery 2.1.0) is web based and is
 Please read the documentation on how to prepare and use this Copy Task project.
 
 ## Community
-In order to enjoy the full support of the Inputlog community, the user should register (http://www.inputlog.net/downloads/). Upon completion of the registration a personal installation code is also sent, allowing the possibility to unlock the complete Inputlog application. Users looking for inspiration will find ideas in the different Working Groups of the European Literacy Network at (https://www.is1401eln.eu/en/).
+In order to enjoy the full support of the Inputlog community, the user should register (http://www.inputlog.net/downloads/). Upon completion of the registration a personal installation code is also sent, allowing the possibility to unlock the complete Inputlog application. Users looking for inspiration and contacts will find ideas in the different Working Groups of the European Literacy Network at (https://www.is1401eln.eu/en/).
 
 ## License
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
